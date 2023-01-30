@@ -10,6 +10,8 @@ import { useState } from "react";
 export function Post({ author, publishedAt, content }) {
   const [comments, setComments] = useState(["Primeiro Post!"]);
 
+  const [newCommentText, setNewCommentText] = useState(['']);
+  
   const publishedDateFormatted = format(
     publishedAt,
     "d 'de' LLLL 'às' HH:mm'h'",
@@ -17,6 +19,7 @@ export function Post({ author, publishedAt, content }) {
       locale: ptBR,
     }
   );
+
   const publishedDateRelativeNow = formatDistanceToNow(publishedAt, {
     locale: ptBR,
     addSuffix: true,
@@ -24,10 +27,13 @@ export function Post({ author, publishedAt, content }) {
 
   function handleCreateComment() {
     event.preventDefault();
-    const newCommentText = event.target.comment.value
     setComments([...comments, newCommentText]);
-    event.target.comment.value = "";
+    setNewCommentText('');
   }
+
+  function handleNewCommentChange() {
+    setNewCommentText(event.target.value)
+  } 
 
   return (
     <article className={styles.post}>
@@ -65,19 +71,21 @@ export function Post({ author, publishedAt, content }) {
       <form onSubmit={handleCreateComment} className={styles.commentForm}>
         <strong>Deixe seu feedback</strong>
 
-        <textarea
-          name="comment"
+        <textarea 
+          name="comment" 
           placeholder="Deixe seu comentário" 
+          value={newCommentText}
+          onChange={handleNewCommentChange}
         />
 
         <footer>
           <button type="submit">Publicar</button>
-        </footer>        
+        </footer>
       </form>
 
       <div className={styles.commentList}>
         {comments.map((comment) => {
-          return <Comment content={comment}/>;
+          return <Comment content={comment} />;
         })}
       </div>
     </article>

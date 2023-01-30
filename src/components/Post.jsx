@@ -10,8 +10,8 @@ import { useState } from "react";
 export function Post({ author, publishedAt, content }) {
   const [comments, setComments] = useState(["Primeiro Post!"]);
 
-  const [newCommentText, setNewCommentText] = useState(['']);
-  
+  const [newCommentText, setNewCommentText] = useState([""]);
+
   const publishedDateFormatted = format(
     publishedAt,
     "d 'de' LLLL 'às' HH:mm'h'",
@@ -28,12 +28,20 @@ export function Post({ author, publishedAt, content }) {
   function handleCreateComment() {
     event.preventDefault();
     setComments([...comments, newCommentText]);
-    setNewCommentText('');
+    setNewCommentText("");
   }
 
   function handleNewCommentChange() {
-    setNewCommentText(event.target.value)
-  } 
+    setNewCommentText(event.target.value);
+  }
+
+  function deleteComment(commentToDelete) {
+    const commentsWithoutDeleteOne = comments.filter(comment =>{
+      return comment !== commentToDelete;
+    })
+
+    setComments(commentsWithoutDeleteOne);
+  }
 
   return (
     <article className={styles.post}>
@@ -71,9 +79,9 @@ export function Post({ author, publishedAt, content }) {
       <form onSubmit={handleCreateComment} className={styles.commentForm}>
         <strong>Deixe seu feedback</strong>
 
-        <textarea 
-          name="comment" 
-          placeholder="Deixe seu comentário" 
+        <textarea
+          name="comment"
+          placeholder="Deixe seu comentário"
           value={newCommentText}
           onChange={handleNewCommentChange}
         />
@@ -85,7 +93,13 @@ export function Post({ author, publishedAt, content }) {
 
       <div className={styles.commentList}>
         {comments.map((comment) => {
-          return <Comment key={comment} content={comment} />;
+          return (
+            <Comment
+              key={comment}
+              content={comment}
+              onDeleteComment={deleteComment}
+            />
+          );
         })}
       </div>
     </article>
